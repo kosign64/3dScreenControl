@@ -218,10 +218,10 @@ void MainWindow::timerEvent(QTimerEvent *)
                 // Добавление всех найденных точек на карту глубины
                 for(size_t i = 0; i < (sizeof(points) / sizeof(points[0])); ++i)
                 {
-                    int index = points[i].x + points[i].y * 320;
+                    int index = (int)points[i].x + (int)points[i].y * 320;
                     if((index >= 0) && (index <= (320 * 240)))
                     {
-                        frameMas[(int)(points[i].x + points[i].y * 320)] = 255;
+                        frameMas[index] = 255;
                     }
                 }
 
