@@ -143,7 +143,7 @@ void MainWindow::timerEvent(QTimerEvent *)
                 data[2] = rightHand3d.angle << 1;
                 if(rightHand3d.x < 0) data[2] |= 1;
                 data[3] = rightHand3d.x << 4;
-                data[3] |= head3d.y;
+                data[3] |= rightHand3d.y;
 
                 data[4] = leftHand3d.angle << 1;
                 if(leftHand3d.x < 0) data[4] |= 1;
@@ -274,8 +274,6 @@ MainWindow::Point3D MainWindow::scalePoint(Point3f jointPoint, Point3f torso,
     // atan
     double rad_ang = atan2(res.z, res.x);
     double vector = sqrt(pow(res.x, 2) + pow(res.z, 2));
-
-    if (res.x > 0) vector = -vector;
 
     angle = rad_ang * 180 / M_PI;
     if(res.z < 0) angle = 360 + angle;
