@@ -25,13 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    comport.cpp
+    comport.cpp \
+    visualiser.cpp
 
 HEADERS  += mainwindow.h \
-    comport.h
+    comport.h \
+    visualiser.h \
+    shared.h
 
 INCLUDEPATH += "/home/konstantin/OpenNI2/Include"
-INCLUDEPATH += "/home/konstantin/NiTE2/Include"
+INCLUDEPATH += "/home/konstantin/NiTE/NiTE-Linux-x64-2.2/Include"
 
 LIBS += "/home/konstantin/OpenNI2/Bin/x64-Release/lib*.so"
-LIBS += "/home/konstantin/NiTE2/Redist/lib*.so"
+LIBS += "/home/konstantin/NiTE/NiTE-Linux-x64-2.2/Redist/lib*.so"

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "visualiser.h"
 #include <QLayout>
 #include <QLabel>
 #include <QKeyEvent>
@@ -16,12 +17,19 @@ MainWindow::MainWindow(QWidget *parent)
     // Создание главного виджета и его
     // настройка
     mainWidget = new QWidget(this);
-    mainLayout = new QVBoxLayout;
+    mainLayout = new QHBoxLayout;
     imageLabel = new QLabel(mainWidget);
+    visualiser = new Visualiser(mainWidget);
     imageLabel->setFixedSize(640, 480);
+    visualiser->setFixedSize(imageLabel->height(),
+                             imageLabel->height());
     mainLayout->addWidget(imageLabel);
+    mainLayout->addWidget(visualiser);
     mainWidget->setLayout(mainLayout);
     setCentralWidget(mainWidget);
+
+    connect(this, &MainWindow::sendPoints, visualiser,
+            &Visualiser::getPoints);
 
     // Открытие последовательного порта порта
 #ifdef __linux__
@@ -170,6 +178,16 @@ void MainWindow::timerEvent(QTimerEvent *)
                 data[13] = leftShoulder3d.x << 4;
                 data[13] |= leftShoulder3d.y;
 
+                QVector<Point3D> points3d;
+                points3d.push_back(rightHand3d);
+                points3d.push_back(leftHand3d);
+                points3d.push_back(rightElbow3d);
+                points3d.push_back(leftElbow3d);
+                points3d.push_back(rightShoulder3d);
+                points3d.push_back(leftShoulder3d);
+                points3d.push_back(head3d);
+                emit sendPoints(points3d);
+
                 Point2D points[7];
                 // Преобразование трёхмарных координат точек в двухмерные
                 // координаты на карте глубины для отображения
@@ -209,11 +227,9 @@ void MainWindow::timerEvent(QTimerEvent *)
                                                            &points[6].x,
                                                            &points[6].y);
 
-                qDebug() << "head x: " << head3d.x << "head_y: " <<
-                            head3d.y << "head_ang " << head3d.angle;
-                qDebug() << "Right hand x:" << rightHand3d.x <<
-                            "Right hand y: " << rightHand3d.y <<
-                            "right hand_ang " << rightHand3d.angle;
+
+                qDebug() << rightHand3d.angle << rightHand3d.x <<
+                            leftHand3d.angle << leftHand3d.x;
 
                 // Добавление всех найденных точек на карту глубины
                 for(size_t i = 0; i < (sizeof(points) / sizeof(points[0])); ++i)
@@ -256,7 +272,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
 }
 
 // Ваша функция масштабирования точки
-MainWindow::Point3D MainWindow::scalePoint(Point3f jointPoint, Point3f torso,
+Point3D MainWindow::scalePoint(Point3f jointPoint, Point3f torso,
                                            double scale)
 {
     Point3D point;
