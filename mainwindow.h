@@ -4,11 +4,14 @@
 #include <QMainWindow>
 #include <NiTE.h>
 #include "comport.h"
+#include "shared.h"
 
 // Объявление используемых классов из
 // библиотеки Qt
-class QVBoxLayout;
+class QHBoxLayout;
 class QLabel;
+
+class Visualiser;
 // Использование пространств имён nite и
 // openni по умолчнию, чтобы не писать
 // nite:: и openni::
@@ -41,14 +44,6 @@ protected:
 
 private:
     // Объявление структуры для хранения
-    // трёхмерных координат точки на 3д экране
-    struct Point3D
-    {
-        uint8_t angle;
-        int8_t  x;
-        uint8_t y;
-    };
-    // Объявление структуры для хранения
     // двухмерных координат точки на карте
     // глубины
     struct Point2D
@@ -69,12 +64,17 @@ private:
     // Главный виджет
     QWidget *mainWidget;
     // Компановка главного виджета
-    QVBoxLayout *mainLayout;
+    QHBoxLayout *mainLayout;
     // Виджет для отображения изображения
     QLabel *imageLabel;
 
+    Visualiser *visualiser;
+
     // Ваша функция масштабирования положения точки
     Point3D scalePoint(Point3f jointPoint, Point3f torso, double scale);
+
+signals:
+    void sendPoints(QVector<Point3D> points);
 };
 
 #endif // MAINWINDOW_H
